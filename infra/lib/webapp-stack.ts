@@ -1,6 +1,7 @@
 import { aws_codecommit, aws_ec2, aws_ecr, StackProps, Stack } from 'aws-cdk-lib';
 import { Bastion } from './constructs/ec2/bastion';
 import { Construct } from 'constructs';
+import { Dashboard } from './constructs/cloudwatch/dashboard';
 import { EcsAppBase } from './constructs/ecs/ecs-app-base';
 import { EcsAppService } from './constructs/ecs/ecs-app-service';
 import { CodePipeline } from './constructs/codepipeline/codepipeline';
@@ -76,6 +77,13 @@ export class WebappStack extends Stack {
       repository: webappContainerRepository,
       targetGroup: ecsBase.targetGroup,
       httpsTargetGroup: ecsBase.httpsTargetGroup,
+    });
+
+    // Create Dashboard
+    new Dashboard(this, 'WebappDashboard', {
+      albFullName: ecsBase.alb.loadBalancerFullName,
+      ecsClusterName: ecsBase.cluster.clusterName,
+      ecsServiceName: ecsAppService.ecsService.serviceName,
     });
 
     // Create Deploy Pipeline
