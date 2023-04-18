@@ -41,6 +41,10 @@ dependencies {
     }
 }
 
+checkstyle {
+    toolVersion = '10.9.3'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
